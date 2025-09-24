@@ -25,7 +25,7 @@ module packet_router_regbank (
     input  logic [31:0]            num_packets_dropped
 );
     //
-    enum { AR, R } state_t;
+    typedef enum { AR, R } state_t;
     state_t current_state, next_state;
     logic [31:0] current_data, next_data;
     logic [1:0]  current_resp, next_resp;
@@ -62,6 +62,8 @@ module packet_router_regbank (
         endcase
     end
 
+    assign s_axil_arready = (current_state == AR);
+    assign s_axil_rvalid = (current_state == R);
     assign s_axil_rdata = current_data;
     assign s_axil_rresp = current_resp;
 

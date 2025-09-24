@@ -26,6 +26,7 @@ module axis_packet_fifo #(
     input  logic                     s_axis_tlast,
     input  logic                     s_axis_tdrop,
     input  logic                     s_axis_tvalid,
+    output logic                     s_axis_tready,
     output logic                     s_axis_tdropped,
     //
     output logic [TDATA_WIDTH-1:0]   m_axis_tdata,
@@ -35,7 +36,7 @@ module axis_packet_fifo #(
 
 );
 
-    localparam ADDR_WIDTH = $clog2(DEPTH);
+    localparam ADDR_WIDTH = $clog2(DEPTH) + 1;
     localparam DATA_WIDTH = TDATA_WIDTH + 1; // Extra bit for tlast
 
     // Internal signals
@@ -43,7 +44,7 @@ module axis_packet_fifo #(
     // generate the empty or full signals.
     // The fifo is empty when the (readptr[msb] == writeptr[msb]) & (readptr[lsbs] == writeptr[lsbs])
     // The fifo is full  when the (readptr[msb] != writeptr[msb]) & (readptr[lsbs] == writeptr[lsbs])
-    logic [ADDR_WIDTH:0]   wptr, rptr, last_good_wptr;
+    logic [ADDR_WIDTH-1:0] wptr, rptr, last_good_wptr;
     logic [DATA_WIDTH-1:0] wdata, rdata;
     logic                  we, empty, full;
 
@@ -55,7 +56,7 @@ module axis_packet_fifo #(
 
     // BRAM instance
     bram #(
-        .TDATA_WIDTH(TDATA_WIDTH),
+        .DATA_WIDTH(DATA_WIDTH),
         .ADDR_WIDTH(ADDR_WIDTH)
     ) u_bram (
         .clk   (clk),

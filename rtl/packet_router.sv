@@ -22,7 +22,7 @@ module packet_router #(
     input  logic                   s_axil_arvalid,
     output logic                   s_axil_arready,
     output logic [31:0]            s_axil_rdata,
-    output logic                   s_axil_rresp,
+    output logic [1:0]             s_axil_rresp,
     output logic                   s_axil_rvalid,
     input  logic                   s_axil_rready,
     //
@@ -63,7 +63,7 @@ module packet_router #(
         .m_axis_tdata   (rstg_dcsn_data),
         .m_axis_tlast   (rstg_dcsn_last),
         .m_axis_tvalid  (rstg_dcsn_valid),
-        .m_axis_tready  (rstg_dcsn_ready),
+        .m_axis_tready  (rstg_dcsn_ready)
     );
 
     // count the transfer index in an axi stream packet
@@ -78,7 +78,7 @@ module packet_router #(
         end
     end
 
-    enum { M0, M1} decision_t;
+    typedef enum { M0, M1} decision_t;
     decision_t decision, previous_decision;
     always_ff @(posedge clk or negedge resetn) begin
         if (resetn == 1'b0) begin
@@ -95,15 +95,15 @@ module packet_router #(
     // drop the packet if it is less than 64bits.
     // When TDATA_WIDTH=32, this will happen on the first transfer
     generate if (TDATA_WIDTH == 32) begin
-        rstg_dcsn_drop = (rstg_dcsn_transfer_idx == 0 && rstg_dcsn_last == 1'b1) ? 1'b1 : 1'b0;
+        assign rstg_dcsn_drop = (rstg_dcsn_transfer_idx == 0 && rstg_dcsn_last == 1'b1) ? 1'b1 : 1'b0;
     end
-    endgenerate;
+    endgenerate
 
     // When TDATA_WIDTH>=64, we cannot receive less than 64bits, so tie drop=0.
-    generate if (TDATA_WIDTH == 64 || DATA_WIDTH == 128 || DATA_WIDTH == 256) begin
-        rstg_dcsn_drop = 1'b0;
+    generate if (TDATA_WIDTH == 64 || TDATA_WIDTH == 128 || TDATA_WIDTH == 256) begin
+        assign rstg_dcsn_drop = 1'b0;
     end
-    endgenerate;
+    endgenerate
 
     always_comb begin
         if (decision == M0) begin
@@ -218,8 +218,12 @@ module packet_router #(
             if (dcsn_fifo_m1_ready == 1'b1 && dcsn_fifo_m1_valid == 1'b1 && dcsn_fifo_m1_last == 1'b1 && dcsn_fifo_m1_dropped == 1'b1) begin
                 num_packets_dropped <= num_packets_dropped + 1;
             end
-            assert (((dcsn_fifo_m0_ready == 1'b1 && dcsn_fifo_m0_valid == 1'b1) && (dcsn_fifo_m1_ready == 1'b1 && dcsn_fifo_m1_valid == 1'b1)) == 1'b0)
-            else $error("It is not possible to have drive both M0 and M1 simultaneously");
+            // synopsys translate_off
+            // iverilog off
+            // assert (((dcsn_fifo_m0_ready == 1'b1 && dcsn_fifo_m0_valid == 1'b1) && (dcsn_fifo_m1_ready == 1'b1 && dcsn_fifo_m1_valid == 1'b1)) == 1'b0)
+            // else $error("It is not possible to have drive both M0 and M1 simultaneously");
+            // iverilog on
+            // synopsys translate_on
         end
     end
 
