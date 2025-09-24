@@ -15,16 +15,18 @@ module axis_bfm_slave #(
         s_axis_tready = 1;
         backpressure = 0;
         forever begin
-            @ (posedge clk);
             if (s_axis_tready & s_axis_tvalid) begin
                 integer number_cycles_tready_should_backpressure;
 
                 if (backpressure < 0) number_cycles_tready_should_backpressure = $urandom % 10; // random backpressure
                 else                  number_cycles_tready_should_backpressure = backpressure;  // fixed cycles of back pressure
+                s_axis_tready <= 0;
                 @ (posedge clk);
-                s_axis_tready = 0;
                 repeat (number_cycles_tready_should_backpressure) @ (posedge clk);
-                s_axis_tready = 1;
+                s_axis_tready <= 1;
+            end else begin
+                @ (posedge clk);
+                s_axis_tready <= 1;
             end
         end
     end

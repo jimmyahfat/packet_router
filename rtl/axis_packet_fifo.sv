@@ -46,9 +46,11 @@ module axis_packet_fifo #(
     // The fifo is full  when the (readptr[msb] != writeptr[msb]) & (readptr[lsbs] == writeptr[lsbs])
     logic [ADDR_WIDTH-1:0] wptr, rptr, last_good_wptr;
     logic [DATA_WIDTH-1:0] wdata, rdata;
-    logic                  we, empty, full;
+    logic                  empty, full;
+    logic                  we, re, dropping_packet;
 
     assign we    = s_axis_tvalid & s_axis_tready & !dropping_packet;
+    assign re    = (~m_axis_tvalid | m_axis_tready) & !empty;
     assign empty = (last_good_wptr == rptr);
     assign full  = (wptr[ADDR_WIDTH-1] != rptr[ADDR_WIDTH-1]) & (wptr[ADDR_WIDTH-2:0] == rptr[ADDR_WIDTH-2:0]);
     assign wdata = {s_axis_tlast, s_axis_tdata};
@@ -61,6 +63,7 @@ module axis_packet_fifo #(
     ) u_bram (
         .clk   (clk),
         .we    (we),
+        .re    (re),
         .waddr (wptr),
         .wdata (wdata),
         .raddr (rptr),
@@ -70,7 +73,7 @@ module axis_packet_fifo #(
     // Logic to keep track whether a drop signal was seen before, or whether the
     // fifo was full when we were supposed to accept data. If so, further
     // samples should be dropped.
-    logic drop_seen, dropping_packet;
+    logic drop_seen;
     always_ff @(posedge clk or negedge resetn) begin
         if (resetn == 1'b0) begin
             drop_seen <= 1'b0;
@@ -121,8 +124,17 @@ module axis_packet_fifo #(
     assign s_axis_tready = 1'b1;
 
     assign m_axis_tdata  = rdata[DATA_WIDTH-2:0];
-    assign m_axis_tvalid = !empty;
     assign m_axis_tlast  = rdata[DATA_WIDTH-1];
+
+    // valid delayed by 1 clk because there is a 1 cycle delay from a read
+    // enable to data actually coming out of a BRAM
+    always_ff @(posedge clk or negedge resetn) begin
+        if (resetn == 1'b0) begin
+            m_axis_tvalid <= 0;
+        end else begin
+            m_axis_tvalid = !empty;
+        end
+    end
 
 endmodule
 

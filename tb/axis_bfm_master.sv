@@ -24,13 +24,12 @@ module axis_bfm_master #(
         if (stall < 0) number_cycles_tvalid_should_stall = $urandom % 10; // random stalls
         else           number_cycles_tvalid_should_stall = stall;         // fixed cycles of stalls
         for (integer i=0; i < content.size(); i++) begin
-            m_axis_tdata = content[i];
-            m_axis_tlast = (i == content.size()-1);
-            m_axis_tvalid = 1;
+            m_axis_tdata <= content[i];
+            m_axis_tlast <= (i == content.size()-1);
+            m_axis_tvalid <= 1;
             @ (posedge clk);
-            m_axis_tvalid = 0;
+            m_axis_tvalid <= 0;
             repeat (number_cycles_tvalid_should_stall) @ (posedge clk);
-            m_axis_tvalid = 1;
         end
         @ (posedge clk);
         m_axis_tvalid = 0;

@@ -92,14 +92,26 @@ module tb;
     initial begin
         logic [31:0] packet [];
         logic [31:0] data;
-        even.configure_backpressure(-1);
-        even.configure_backpressure(10000);
+        even.configure_backpressure(12);
+        odd.configure_backpressure(2);
+        repeat (1000) @(posedge clk);
 
-        packet = generate_even_packet(100);
+        packet = generate_even_packet(10);
         source.send(packet);
-        // even.expect(packet);
 
-        repeat (10) @(posedge clk);
+        packet = generate_odd_packet(10);
+        source.send(packet);
+        packet = generate_odd_packet(10);
+        source.send(packet);
+
+        packet = generate_even_packet(321);
+        source.send(packet);
+        packet = generate_odd_packet(1000);
+        source.send(packet);
+        packet = generate_even_packet(1);
+        source.send(packet);
+
+        repeat (1000) @(posedge clk);
         axilite.read(0, data);
         axilite.read(4, data);
         axilite.read(8, data);
@@ -107,19 +119,20 @@ module tb;
 
     initial begin
         $dumpfile("output.vcd");
+        $dumpvars();
     end
 
     function packet_t generate_even_packet(integer length);
         logic [31:0] packet [];
         packet = new[length];
-        foreach (packet[i]) packet[i] = $urandom | 'h0000_0001;
+        foreach (packet[i]) packet[i] = $urandom & 'hFFFF_FFFE;
         return packet;
     endfunction
 
     function packet_t generate_odd_packet(integer length);
         logic [31:0] packet [];
         packet = new[length];
-        foreach (packet[i]) packet[i] = $urandom & 'hFFFF_FFFE;
+        foreach (packet[i]) packet[i] = $urandom | 'h0000_0001;
         return packet;
     endfunction
 

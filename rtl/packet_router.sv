@@ -89,7 +89,7 @@ module packet_router #(
     end
 
     assign decision = (rstg_dcsn_valid == 1'b1 && rstg_dcsn_ready == 1'b1 && rstg_dcsn_transfer_idx == 0 && rstg_dcsn_data[0] == 1'b0) ? M0 :
-                      (rstg_dcsn_valid == 1'b1 && rstg_dcsn_ready == 1'b1 && rstg_dcsn_transfer_idx == 0 && rstg_dcsn_data[1] == 1'b1) ? M1 :
+                      (rstg_dcsn_valid == 1'b1 && rstg_dcsn_ready == 1'b1 && rstg_dcsn_transfer_idx == 0 && rstg_dcsn_data[0] == 1'b1) ? M1 :
                                                                                                                                          previous_decision;
 
     // drop the packet if it is less than 64bits.
@@ -106,6 +106,16 @@ module packet_router #(
     endgenerate
 
     always_comb begin
+        dcsn_fifo_m0_data = 0;
+        dcsn_fifo_m0_last = 0;
+        dcsn_fifo_m0_drop = 0;
+        dcsn_fifo_m0_valid = 0;
+        rstg_dcsn_ready = 0;
+        dcsn_fifo_m1_data = 0;
+        dcsn_fifo_m1_last = 0;
+        dcsn_fifo_m1_drop = 0;
+        dcsn_fifo_m1_valid = 0;
+        rstg_dcsn_ready = 0;
         if (decision == M0) begin
             dcsn_fifo_m0_data  = rstg_dcsn_data;
             dcsn_fifo_m0_last  = rstg_dcsn_last;

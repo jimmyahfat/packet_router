@@ -11,6 +11,7 @@ module bram #(
 )(
     input  logic clk,
     input  logic we,
+    input  logic re,
     input  logic [ADDR_WIDTH-1:0] waddr,
     input  logic [ADDR_WIDTH-1:0] raddr,
     input  logic [DATA_WIDTH-1:0] wdata,
@@ -26,7 +27,9 @@ module bram #(
             mem[waddr] <= wdata;
         end
 
-        rdata <= mem[raddr];
+        if (re) begin
+            rdata <= mem[raddr];
+        end
     end
 
 endmodule
