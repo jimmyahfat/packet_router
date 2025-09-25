@@ -5,18 +5,26 @@
 
 `default_nettype none
 
-module bram #(
-    parameter DATA_WIDTH = 32,
-    parameter ADDR_WIDTH = 4
-)(
-    input  logic clk,
-    input  logic we,
-    input  logic re,
-    input  logic [ADDR_WIDTH-1:0] waddr,
-    input  logic [ADDR_WIDTH-1:0] raddr,
-    input  logic [DATA_WIDTH-1:0] wdata,
-    output logic [DATA_WIDTH-1:0] rdata
+module bram (
+    clk,
+    we,
+    re,
+    waddr,
+    raddr,
+    wdata,
+    rdata
 );
+
+    parameter DATA_WIDTH = 32;
+    parameter ADDR_WIDTH = 4;
+
+    input  logic clk;
+    input  logic we;
+    input  logic re;
+    input  logic [ADDR_WIDTH-1:0] waddr;
+    input  logic [ADDR_WIDTH-1:0] raddr;
+    input  logic [DATA_WIDTH-1:0] wdata;
+    output logic [DATA_WIDTH-1:0] rdata;
 
     // Declare the BRAM memory array
     logic [DATA_WIDTH-1:0] mem [2**ADDR_WIDTH-1:0];

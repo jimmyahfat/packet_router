@@ -3,22 +3,34 @@
 // This module add a register stage on an axi stream bus by making sure all
 // inputs and outputs are registered.
 
-module axis_register_stage #(
-    parameter integer TDATA_WIDTH = 32
-) (
-    input  logic                     clk,
-    input  logic                     resetn,
+module axis_register_stage (
+    clk,
+    resetn,
     //
-    input  logic [TDATA_WIDTH-1:0]   s_axis_tdata,
-    input  logic                     s_axis_tlast,
-    input  logic                     s_axis_tvalid,
-    output logic                     s_axis_tready,
+    s_axis_tdata,
+    s_axis_tlast,
+    s_axis_tvalid,
+    s_axis_tready,
     //
-    output logic [TDATA_WIDTH-1:0]   m_axis_tdata,
-    output logic                     m_axis_tlast,
-    output logic                     m_axis_tvalid,
-    input  logic                     m_axis_tready
+    m_axis_tdata,
+    m_axis_tlast,
+    m_axis_tvalid,
+    m_axis_tready
 );
+    parameter integer TDATA_WIDTH = 32;
+
+    input  logic                     clk;
+    input  logic                     resetn;
+    //
+    input  logic [TDATA_WIDTH-1:0]   s_axis_tdata;
+    input  logic                     s_axis_tlast;
+    input  logic                     s_axis_tvalid;
+    output logic                     s_axis_tready;
+    //
+    output logic [TDATA_WIDTH-1:0]   m_axis_tdata;
+    output logic                     m_axis_tlast;
+    output logic                     m_axis_tvalid;
+    input  logic                     m_axis_tready;
 
     logic [TDATA_WIDTH-1:0] temp_tdata;
     logic                   temp_tlast;

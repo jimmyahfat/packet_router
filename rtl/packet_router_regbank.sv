@@ -9,21 +9,36 @@
 `default_nettype none
 
 module packet_router_regbank (
-    input  logic                   clk,
-    input  logic                   resetn,
+    clk,
+    resetn,
     //
-    input  logic [31:0]            s_axil_araddr,
-    input  logic                   s_axil_arvalid,
-    output logic                   s_axil_arready,
-    output logic [31:0]            s_axil_rdata,
-    output logic [1:0]             s_axil_rresp,
-    output logic                   s_axil_rvalid,
-    input  logic                   s_axil_rready,
+    s_axil_araddr,
+    s_axil_arvalid,
+    s_axil_arready,
+    s_axil_rdata,
+    s_axil_rresp,
+    s_axil_rvalid,
+    s_axil_rready,
     //
-    input  logic [31:0]            num_packets_sent_to_output_0,
-    input  logic [31:0]            num_packets_sent_to_output_1,
-    input  logic [31:0]            num_packets_dropped
+    num_packets_sent_to_output_0,
+    num_packets_sent_to_output_1,
+    num_packets_dropped
 );
+    input  logic                   clk;
+    input  logic                   resetn;
+    //
+    input  logic [31:0]            s_axil_araddr;
+    input  logic                   s_axil_arvalid;
+    output logic                   s_axil_arready;
+    output logic [31:0]            s_axil_rdata;
+    output logic [1:0]             s_axil_rresp;
+    output logic                   s_axil_rvalid;
+    input  logic                   s_axil_rready;
+    //
+    input  logic [31:0]            num_packets_sent_to_output_0;
+    input  logic [31:0]            num_packets_sent_to_output_1;
+    input  logic [31:0]            num_packets_dropped;
+
     //
     typedef enum { AR, R } state_t;
     state_t current_state, next_state;

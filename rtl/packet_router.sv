@@ -11,36 +11,62 @@
 
 `default_nettype none
 
-module packet_router #(
-    parameter integer TDATA_WIDTH = 32,
-    parameter integer DEPTH       = 32
-) (
-    input  logic                   clk,
-    input  logic                   resetn,
+module packet_router (
+    clk,
+    resetn,
     //
-    input  logic [31:0]            s_axil_araddr,
-    input  logic                   s_axil_arvalid,
-    output logic                   s_axil_arready,
-    output logic [31:0]            s_axil_rdata,
-    output logic [1:0]             s_axil_rresp,
-    output logic                   s_axil_rvalid,
-    input  logic                   s_axil_rready,
+    s_axil_araddr,
+    s_axil_arvalid,
+    s_axil_arready,
+    s_axil_rdata,
+    s_axil_rresp,
+    s_axil_rvalid,
+    s_axil_rready,
     //
-    input  logic [TDATA_WIDTH-1:0] s_axis_tdata,
-    input  logic                   s_axis_tlast,
-    input  logic                   s_axis_tvalid,
-    output logic                   s_axis_tready,
+    s_axis_tdata,
+    s_axis_tlast,
+    s_axis_tvalid,
+    s_axis_tready,
     //
-    output logic [TDATA_WIDTH-1:0] m0_axis_tdata,
-    output logic                   m0_axis_tlast,
-    output logic                   m0_axis_tvalid,
-    input  logic                   m0_axis_tready,
+    m0_axis_tdata,
+    m0_axis_tlast,
+    m0_axis_tvalid,
+    m0_axis_tready,
     //
-    output logic [TDATA_WIDTH-1:0] m1_axis_tdata,
-    output logic                   m1_axis_tlast,
-    output logic                   m1_axis_tvalid,
-    input  logic                   m1_axis_tready
+    m1_axis_tdata,
+    m1_axis_tlast,
+    m1_axis_tvalid,
+    m1_axis_tready
 );
+
+    parameter integer TDATA_WIDTH = 32;
+    parameter integer DEPTH       = 32;
+
+    input  logic                   clk;
+    input  logic                   resetn;
+    //
+    input  logic [31:0]            s_axil_araddr;
+    input  logic                   s_axil_arvalid;
+    output logic                   s_axil_arready;
+    output logic [31:0]            s_axil_rdata;
+    output logic [1:0]             s_axil_rresp;
+    output logic                   s_axil_rvalid;
+    input  logic                   s_axil_rready;
+    //
+    input  logic [TDATA_WIDTH-1:0] s_axis_tdata;
+    input  logic                   s_axis_tlast;
+    input  logic                   s_axis_tvalid;
+    output logic                   s_axis_tready;
+    //
+    output logic [TDATA_WIDTH-1:0] m0_axis_tdata;
+    output logic                   m0_axis_tlast;
+    output logic                   m0_axis_tvalid;
+    input  logic                   m0_axis_tready;
+    //
+    output logic [TDATA_WIDTH-1:0] m1_axis_tdata;
+    output logic                   m1_axis_tlast;
+    output logic                   m1_axis_tvalid;
+    input  logic                   m1_axis_tready;
 
     logic [TDATA_WIDTH-1:0]   rstg_dcsn_data,  dcsn_fifo_m0_data,    fifo_rstg_m0_data,  dcsn_fifo_m1_data,  fifo_rstg_m1_data;
     logic                     rstg_dcsn_valid, dcsn_fifo_m0_valid,   fifo_rstg_m0_valid, dcsn_fifo_m1_valid, fifo_rstg_m1_valid;
@@ -67,13 +93,13 @@ module packet_router #(
     );
 
     // count the transfer index in an axi stream packet
-    logic [31:0] rstg_dcsn_transfer_idx;
+    logic [3:0] rstg_dcsn_transfer_idx;
     always_ff @(posedge clk or negedge resetn) begin
         if (resetn == 1'b0) begin
             rstg_dcsn_transfer_idx <= 0;
         end else if (rstg_dcsn_valid == 1'b1 && rstg_dcsn_ready == 1'b1 && rstg_dcsn_last == 1'b1) begin
             rstg_dcsn_transfer_idx <= 0;
-        end else if (rstg_dcsn_valid == 1'b1 && rstg_dcsn_ready == 1'b1) begin
+        end else if (rstg_dcsn_valid == 1'b1 && rstg_dcsn_ready == 1'b1 && rstg_dcsn_transfer_idx != '1) begin
             rstg_dcsn_transfer_idx <= rstg_dcsn_transfer_idx + 1;
         end
     end
@@ -82,7 +108,7 @@ module packet_router #(
     decision_t decision, previous_decision;
     always_ff @(posedge clk or negedge resetn) begin
         if (resetn == 1'b0) begin
-            previous_decision <= 0;
+            previous_decision <= M0;
         end else if (rstg_dcsn_valid == 1'b1 && rstg_dcsn_ready == 1'b1 && rstg_dcsn_transfer_idx == 0) begin
             previous_decision <= decision;
         end

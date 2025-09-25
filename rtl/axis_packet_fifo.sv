@@ -15,26 +15,40 @@
 
 `default_nettype none
 
-module axis_packet_fifo #(
-    parameter integer TDATA_WIDTH = 32,
-    parameter integer DEPTH = 32
-) (
-    input  logic                     clk,
-    input  logic                     resetn,
+module axis_packet_fifo (
+    clk,
+    resetn,
     //
-    input  logic [TDATA_WIDTH-1:0]   s_axis_tdata,
-    input  logic                     s_axis_tlast,
-    input  logic                     s_axis_tdrop,
-    input  logic                     s_axis_tvalid,
-    output logic                     s_axis_tready,
-    output logic                     s_axis_tdropped,
+    s_axis_tdata,
+    s_axis_tlast,
+    s_axis_tdrop,
+    s_axis_tvalid,
+    s_axis_tready,
+    s_axis_tdropped,
     //
-    output logic [TDATA_WIDTH-1:0]   m_axis_tdata,
-    output logic                     m_axis_tlast,
-    output logic                     m_axis_tvalid,
-    input  logic                     m_axis_tready
+    m_axis_tdata,
+    m_axis_tlast,
+    m_axis_tvalid,
+    m_axis_tready
 
 );
+    parameter integer TDATA_WIDTH = 32;
+    parameter integer DEPTH = 32;
+
+    input  logic                     clk;
+    input  logic                     resetn;
+    //
+    input  logic [TDATA_WIDTH-1:0]   s_axis_tdata;
+    input  logic                     s_axis_tlast;
+    input  logic                     s_axis_tdrop;
+    input  logic                     s_axis_tvalid;
+    output logic                     s_axis_tready;
+    output logic                     s_axis_tdropped;
+    //
+    output logic [TDATA_WIDTH-1:0]   m_axis_tdata;
+    output logic                     m_axis_tlast;
+    output logic                     m_axis_tvalid;
+    input  logic                     m_axis_tready;
 
     localparam ADDR_WIDTH = $clog2(DEPTH) + 1;
     localparam DATA_WIDTH = TDATA_WIDTH + 1; // Extra bit for tlast
