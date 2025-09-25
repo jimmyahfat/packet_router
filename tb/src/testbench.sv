@@ -118,8 +118,13 @@ module tb;
     end
 
     initial begin
-        $dumpfile("output.vcd");
-        $dumpvars();
+        if ($test$plusargs ("vcd")) begin
+            string vcdfile;
+            int res;
+            res = $value$plusargs("vcd+%s", vcdfile);
+            $dumpfile(vcdfile);
+            $dumpvars();
+        end
     end
 
     function packet_t generate_even_packet(integer length);
