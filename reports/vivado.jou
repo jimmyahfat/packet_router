@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2025.1 (64-bit)
+# SW Build 6140274 on Wed May 21 22:58:25 MDT 2025
+# IP Build 6138677 on Thu May 22 03:10:11 MDT 2025
+# SharedData Build 6139179 on Tue May 20 17:58:58 MDT 2025
+# Start of session at: Fri Sep 26 09:18:51 2025
+# Process ID         : 17371
+# Current directory  : /home/jimmy/packet_router/syn/output
+# Command line       : vivado -mode batch -notrace -script /home/jimmy/packet_router/syn/run_ooc_synthesis.tcl -tclargs xc7a200tfbg676-2 230
+# Log file           : /home/jimmy/packet_router/syn/output/vivado.log
+# Journal file       : /home/jimmy/packet_router/syn/output/vivado.jou
+# Running On         : DESKTOP-CBIH3RB
+# Platform           : Ubuntu
+# Operating System   : Ubuntu 22.04.5 LTS
+# Processor Detail   : 13th Gen Intel(R) Core(TM) i7-13700H
+# CPU Frequency      : 2918.399 MHz
+# CPU Physical cores : 10
+# CPU Logical cores  : 20
+# Host memory        : 33493 MB
+# Swap memory        : 8589 MB
+# Total Virtual      : 42083 MB
+# Available Virtual  : 39710 MB
+#-----------------------------------------------------------
+source /home/jimmy/packet_router/syn/run_ooc_synthesis.tcl -notrace

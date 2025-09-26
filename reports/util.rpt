@@ -1,0 +1,40 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.1 (lin64) Build 6140274 Wed May 21 22:58:25 MDT 2025
+| Date         : Fri Sep 26 09:21:32 2025
+| Host         : DESKTOP-CBIH3RB running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_utilization -hierarchical -file util.rpt
+| Design       : packet_router
+| Device       : xc7a200tfbg676-2
+| Speed File   : -2
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------------+-----------------------+------------+------------+---------+------+-----+--------+--------+------------+
+|          Instance         |         Module        | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | DSP Blocks |
++---------------------------+-----------------------+------------+------------+---------+------+-----+--------+--------+------------+
+| packet_router             |                 (top) |        240 |        240 |       0 |    0 | 375 |      4 |      0 |          0 |
+|   (packet_router)         |                 (top) |          3 |          3 |       0 |    0 | 100 |      0 |      0 |          0 |
+|   m0_packet_fifo          |      axis_packet_fifo |         38 |         38 |       0 |    0 |  35 |      2 |      0 |          0 |
+|     (m0_packet_fifo)      |      axis_packet_fifo |         33 |         33 |       0 |    0 |  35 |      0 |      0 |          0 |
+|     u_bram                |                bram_3 |          6 |          6 |       0 |    0 |   0 |      2 |      0 |          0 |
+|   m0_rstg                 |   axis_register_stage |         35 |         35 |       0 |    0 |  69 |      0 |      0 |          0 |
+|   m1_packet_fifo          |    axis_packet_fifo_0 |         40 |         40 |       0 |    0 |  35 |      2 |      0 |          0 |
+|     (m1_packet_fifo)      |    axis_packet_fifo_0 |         35 |         35 |       0 |    0 |  35 |      0 |      0 |          0 |
+|     u_bram                |                  bram |          6 |          6 |       0 |    0 |   0 |      2 |      0 |          0 |
+|   m1_rstg                 | axis_register_stage_1 |         35 |         35 |       0 |    0 |  69 |      0 |      0 |          0 |
+|   s_rstg                  | axis_register_stage_2 |         47 |         47 |       0 |    0 |  34 |      0 |      0 |          0 |
+|   u_packet_router_regbank | packet_router_regbank |         43 |         43 |       0 |    0 |  33 |      0 |      0 |          0 |
++---------------------------+-----------------------+------------+------------+---------+------+-----+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+
